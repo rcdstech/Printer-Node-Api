@@ -1,0 +1,37 @@
+{
+  "_declaration": {
+    "_attributes": {
+      "version": "1.0",
+      "encoding": "utf-8"
+    }
+  },
+  "SerioCommands": {
+    "_attributes": {
+      "version": "1.0"
+    },
+    "IoScanAndSend": {
+      "TxProfiles": {
+        "Smtp": {
+          "Destination": {
+            "_text": "test@test.net"
+          }
+        }
+      },
+      "ScanTray": {
+        "_text":"ADF"},
+      "ColorMode": {
+        "_text":"Color"},
+      "Resolution": {
+        "_text":"Normal"},
+      "FileType": {
+        "_text":"PDF"},
+      "FileNameFixed": "true",
+      "JobFinAckUrl": "http://example.bsi.com/jobfin"
+    },
+    "DisplayInfo": {
+      "Script": {
+        "_cdata": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n         <UiScreen >\n                    <NullScreen></NullScreen>\n         </UiScreen>\n         "
+      }
+    }
+  }
+}

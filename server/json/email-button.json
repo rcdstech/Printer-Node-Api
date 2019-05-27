@@ -1,0 +1,27 @@
+{
+  "UiScreen": {
+    "IoScreen": {
+      "IoObject": {
+        "TextArea": {
+          "_attributes": {
+            "id": "email"
+          },
+          "Mask": "false",
+          "LetterTypes": {
+            "LetterType": ["LowerCase", "Numeric", "Glyph"]
+          },
+          "Title": "Enter Email Address"
+        }
+      }
+    },
+    "Title":"Email Submit",
+    "Operations": {
+      "Op": {
+        "_attributes": {
+          "action": "./commandxml/email",
+          "type": "Submit"
+        }
+      }
+    }
+  }
+}

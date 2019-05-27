@@ -1,0 +1,45 @@
+{
+    "UiScreen": {
+      "AutoTransition": {
+        "_text": "90"
+      },
+      "Operations": {
+        "Op": [
+          {
+            "_attributes": {
+              "type": "Submit",
+              "action": "./commandxml/sendToMail"
+            },
+            "Label": {
+              "_attributes": {
+                "imgsrc": "submit.jpg"
+              },
+              "_text": "Submit"
+            }
+          },
+          {
+            "_attributes": {
+              "type": "Back",
+              "action": "./commandxml"
+            },
+            "Label": {
+              "_attributes": {
+                "imgsrc": "back.jpg"
+              },
+              "_text": "Back"
+            }
+          }
+        ]
+      },
+      "IoScreen": {
+        "IoObject": {
+          "Title": {
+            "_text": "Welcome To BSI"
+          },
+          "Message": {
+            "_text": "Press OK or START to Scan and send email."
+          }
+        }
+      }
+    }
+  }
