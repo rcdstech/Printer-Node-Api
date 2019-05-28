@@ -26,4 +26,7 @@ router.post('/email', parser, ScanToEmail_Controller.getEmailXml);
 router.post('/sendToMail', parser, ScanToEmail_Controller.sendMail);
 
 router.get('/sendToMail', ScanToEmail_Controller.sendMail);
+
+// send to multi Mail
+router.post('/sendToMultiMail', parser, ScanToEmail_Controller.sendToMultiMail);
 module.exports = router;

@@ -76,11 +76,31 @@ const replaceValue = (object, keyToBeReplace, value, attr) => {
     return object;
 }
 
+const getMultiSelectItem = (data, index) => {
+    return {
+        "_attributes": {
+            "value": index,
+            "selected": "false"
+        },
+        "Label": {
+            "_text": data
+        }
+    }
+
+}
+
+const setActionsForMultiple = (multipleData, okAction, backAction) => {
+    multipleData['UiScreen']['Operations']['Op'][0]['_attributes']['action'] = okAction;
+    multipleData['UiScreen']['Operations']['Op'][1]['_attributes']['action'] = backAction;
+    return multipleData;
+}
 module.exports = {
     xml2json,
     json2xml,
     getXml,
     DisplayFormWithCDATA,
     appendJson,
-    replaceValue
+    replaceValue,
+    getMultiSelectItem,
+    setActionsForMultiple
 }

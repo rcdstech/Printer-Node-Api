@@ -44,3 +44,13 @@ exports.sendMail = function (req, res) {
         })
     });
 };
+
+// Render xml from last given Multi email
+exports.sendToMultiMail = function (req, res) {
+    console.log(req.xml)
+    ScanToEmail.findOne().sort({createdAt: -1}).exec((err, result) => {
+        getXml(result, 'ScanToEmail', '_text').then((data) => {
+            res.send(data);
+        })
+    });
+};

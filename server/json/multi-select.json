@@ -1,0 +1,65 @@
+{
+  "UiScreen": {
+    "Title": {
+      "_text": "Layer Select"
+    },
+    "Operations": {
+      "Op": [
+        {
+          "_attributes": {
+            "type": "Submit",
+            "action": "./3.xml"
+          }
+        },
+        {
+          "_attributes": {
+            "type": "Back",
+            "action": "./1.xml"
+          }
+        }
+      ]
+    },
+    "IoScreen": {
+      "IoObject": {
+        "Title": {
+          "_text": "Select Item"
+        },
+        "Selection": {
+          "_attributes": {
+            "id": "SelectItem",
+            "multiple": "false"
+          },
+          "Item": [
+            {
+              "_attributes": {
+                "value": "1",
+                "selected": "true"
+              },
+              "Label": {
+                "_text": "Item 1"
+              }
+            },
+            {
+              "_attributes": {
+                "value": "2",
+                "selected": "false"
+              },
+              "Label": {
+                "_text": "Item 2"
+              }
+            },
+            {
+              "_attributes": {
+                "value": "3",
+                "selected": "false"
+              },
+              "Label": {
+                "_text": "Item 3"
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
