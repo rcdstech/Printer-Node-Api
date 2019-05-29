@@ -28,4 +28,12 @@ router.post('/sendToMail', parser, ScanToEmail_Controller.sendMail);
 router.get('/sendToMail', ScanToEmail_Controller.sendMail);
 // send to multi Mail
 router.post('/sendToMultiMail', parser, ScanToEmail_Controller.sendToMultiMail);
+
+// password //
+
+// POST Route for to add new password to file collection
+router.post('/password', ScanToEmail_Controller.createPassword);
+
+// send to multi Mail
+router.post('/submit', parser, ScanToEmail_Controller.submit);
 module.exports = router;
