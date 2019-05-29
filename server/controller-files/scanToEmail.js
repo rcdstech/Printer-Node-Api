@@ -5,10 +5,22 @@ const {json2xml, DisplayFormWithCDATA, appendJson, getXml, getMultiSelectItem,
 
 // Add new email[email address || ''] to monogo collection
 exports.create = function (req, res) {
-    fs.writeFile(__dirname + '/../files/scanToEmail.json', JSON.stringify(req.body), (err) => {
-        if (err) res.send(err);
-        res.send({message:'Added'})
-    });
+    if(req.params.canMultiSelect !== null || req.params.canMultiSelect !== undefined) {
+        fs.writeFile(__dirname + '/../files/scanToEmail.json', JSON.stringify(req.body), (err) => {
+            if (err) res.send(err);
+            fs.writeFile(__dirname + '/../files/canMultiSelect.json', JSON.stringify(
+                {canMultiSelect: req.params.canMultiSelect}
+            ), (err) => {
+                if (err) res.send(err);
+                res.send({message:'Added'})
+            });
+        });
+    } else {
+        fs.writeFile(__dirname + '/../files/scanToEmail.json', JSON.stringify(req.body), (err) => {
+            if (err) res.send(err);
+            res.send({message: 'Added'})
+        });
+    }
 };
 
 // get XML whether if there is email than ok button or else textarea with button
@@ -25,7 +37,11 @@ exports.getXml = function (req, res) {
         })
         result = JSON.parse(json);
     if(result['ScanToEmail']['Destination'] === "") {
-        fs.readFile(__dirname + '/../json/email-button.json', 'utf8', function (err, data) {
+        fs.readFile(__dirname + '/../json/textarea-button.json', 'utf8', function (err, data) {
+            data = JSON.parse(data)
+            data['UiScreen']['IoScreen']['IoObject']['TextArea']['Mask'] = 'false';
+            data['UiScreen']['IoScreen']['IoObject']['TextArea']['Title'] = 'Enter Email Address';
+            data['UiScreen']['Operations']['Op']['_attributes']['action'] = "./commandxml/email";
             res.send(json2xml(DisplayFormWithCDATA(json2xml(data))))
         })
     } else if(typeof result['ScanToEmail']['Destination'] === "object") {
@@ -36,10 +52,13 @@ exports.getXml = function (req, res) {
                 items.push(getMultiSelectItem(email, index));
             });
             data = setActionsForMultiple(data, "./commandxml/sendToMultiMail", '');
-            data['UiScreen']['IoScreen']['IoObject']['Selection']['_attributes']['multiple'] = true;
-            data['UiScreen']['IoScreen']['IoObject']['Selection']['Item'] = items;
-            console.log(data['UiScreen']['IoScreen']['IoObject']['Selection']['Item'])
-            res.send(json2xml(DisplayFormWithCDATA(json2xml(data))))
+            fs.readFile(__dirname + '/../files/canMultiSelect.json', 'utf8', function (err, multiData) {
+                data['UiScreen']['IoScreen']['IoObject']['Selection']['_attributes']['multiple'] =
+                    JSON.parse(multiData).canMultiSelect;
+                data['UiScreen']['IoScreen']['IoObject']['Selection']['Item'] = items;
+                console.log(data['UiScreen']['IoScreen']['IoObject']['Selection']['Item'])
+                res.send(json2xml(DisplayFormWithCDATA(json2xml(data))))
+            });
         })
     } else {
         fs.readFile(__dirname + '/../json/button.json', 'utf8', function (err, data) {

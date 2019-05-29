@@ -17,7 +17,11 @@ exports.create = function (req, res) {
 exports.getXml = function (req, res) {
     ScanToEmail.findOne().sort({createdAt: -1}).exec((err, result) => {
     if(result['ScanToEmail']['Destination'] === "") {
-        fs.readFile(__dirname + '/../json/email-button.json', 'utf8', function (err, data) {
+        fs.readFile(__dirname + '/../json/textarea-button.json', 'utf8', function (err, data) {
+            data = JSON.parse(data)
+            data['UiScreen']['IoScreen']['IoObject']['TextArea']['Mask'] = 'false';
+            data['UiScreen']['IoScreen']['IoObject']['TextArea']['Title'] = 'Enter Email Address';
+            data['UiScreen']['Operations']['Op']['_attributes']['action'] = "./commandxml/email";
             res.send(json2xml(DisplayFormWithCDATA(json2xml(data))))
         })
     } else {

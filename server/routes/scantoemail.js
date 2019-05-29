@@ -10,6 +10,10 @@ const ScanToEmail_Controller = require('../controller/scanToEmail');
 // POST Route for to add new email[email address || ''] to monogo collection
 router.post('/add', ScanToEmail_Controller.create);
 
+// POST Route for to add new email[email address || ''] to monogo collection and having multi select option
+// in printer
+router.post('/add/:canMultiSelect', ScanToEmail_Controller.create);
+
 // GET Route for to get XML whether if there is email than ok button or else textarea with button
 router.get('/', ScanToEmail_Controller.getXml);
 
