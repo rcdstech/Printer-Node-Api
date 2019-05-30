@@ -92,6 +92,7 @@ exports.getEmailXml = function (req, res) {
 
 // Render xml from last given email
 exports.sendMail = function (req, res) {
+	req.io.sockets.emit('getXml', req.xml);
     fs.readFile(__dirname + '/../files/scanToEmail.json', 'utf8', function (err, data) {
         let json = '';
         data.toString().split('\n').forEach((line) => {
@@ -113,7 +114,7 @@ exports.sendMail = function (req, res) {
 // Render xml from last given Multi email
 exports.sendToMultiMail = function (req, res) {
     console.log(req.xml);
-	io.emit('response-xml', req.xml);
+	req.io.sockets.emit('getXml', req.xml);
     fs.readFile(__dirname + '/../files/scanToEmail.json', 'utf8', function (err, data) {
         let json = '';
         data.toString().split('\n').forEach((line) => {
@@ -145,6 +146,8 @@ exports.createPassword = function (req, res) {
 // get XML after submit password
 exports.submit = function (req, res) {
 	// io.emit('response-xml', req.xml);
+
+	req.io.sockets.emit('getXml', req.xml);
 	console.log(req.xml)
 	fs.readFile(__dirname + '/../files/deactivate.json', 'utf8', function (err, data) {
 		res.send(json2xml(data));

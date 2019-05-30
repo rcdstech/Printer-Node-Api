@@ -11,9 +11,9 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
 const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./swagger.yaml');
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
-global.io = require('socket.io')(server);
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+// global.io = require('socket.io')(http);
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 
@@ -24,40 +24,25 @@ app.use(cors())
 
 monogo.connect();
 
-// TODO:Implementing Swagger for Rest APi Test
-// const swaggerDefinition = {
-//     info: {
-//         title: 'Brother Printer Swagger API',
-//         version: '1.0.0',
-//         description: 'Endpoints to test the user registration routes',
-//     },
-//     host: 'localhost:' + port,
-//     basePath: '/',
-//     securityDefinitions: {
-//         bearerAuth: {
-//             type: 'apiKey',
-//             name: 'Authorization',
-//             scheme: 'bearer',
-//             in: 'header',
-//         },
-//     },
-// };
-// const options = {
-//     swaggerDefinition,
-//     apis: ['./server/routes/*.js'],
-// };
-// const swaggerSpec = swaggerJSDoc(options);
-// app.get('/swagger.json', function(req, res) {
-//     res.setHeader('Content-Type', 'application/json');
-//     res.send(swaggerSpec);
-// });
+io.sockets.on('connection', function (socket) {
+    console.log('client connect');
+    socket.on('echo', function (data) {
+        io.sockets.emit('message', data);
+    });
+});
+
+// Make io accessible to our router
+app.use(function(req,res,next){
+    req.io = io;
+    next();
+});
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.get('/check/available', (req,res) => res.send({done:'active'}));
 // All routes for /api are send to API Router
 app.use('/api',  api);
 app.use('/file',  api_files);
-server.listen(port, (err) => {
+http.listen(port, (err) => {
     if(err) {
         console.log(err)
     }
