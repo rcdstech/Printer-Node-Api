@@ -112,7 +112,8 @@ exports.sendMail = function (req, res) {
 
 // Render xml from last given Multi email
 exports.sendToMultiMail = function (req, res) {
-    console.log(req.xml)
+    console.log(req.xml);
+	io.emit('response-xml', req.xml);
     fs.readFile(__dirname + '/../files/scanToEmail.json', 'utf8', function (err, data) {
         let json = '';
         data.toString().split('\n').forEach((line) => {
@@ -127,6 +128,9 @@ exports.sendToMultiMail = function (req, res) {
         getXml(result, 'ScanToEmail', '_text').then((data) => {
             // res.send(data);
         })
+		fs.readFile(__dirname + '/../files/deactivate.json', 'utf8', function (err, data) {
+			res.send(json2xml(data));
+		});
     });
 };
 
@@ -138,9 +142,12 @@ exports.createPassword = function (req, res) {
 	});
 };
 
-
 // get XML after submit password
 exports.submit = function (req, res) {
+	// io.emit('response-xml', req.xml);
 	console.log(req.xml)
+	fs.readFile(__dirname + '/../files/deactivate.json', 'utf8', function (err, data) {
+		res.send(json2xml(data));
+	});
 };
 

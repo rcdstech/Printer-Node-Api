@@ -1,0 +1,18 @@
+{
+  "_declaration": {
+    "_attributes": {
+      "version": "1.0",
+      "encoding": "utf-8"
+    }
+  },
+  "SerioCommands": {
+    "_attributes": {
+      "version": "100"
+    },
+    "DeactivateLock": {
+      "JobFinAckUrl": {
+        "_text": "./testlogout2.xml"
+      }
+    }
+  }
+}
