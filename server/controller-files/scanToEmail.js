@@ -186,23 +186,23 @@ exports.sendToMultiMail = function (req, res) {
 		}
 		}	
 	}
-    fs.readFile(__dirname + '/../files/scanToEmail.json', 'utf8', function (err, data) {
-        let json = '';
-        data.toString().split('\n').forEach((line) => {
-            if (!line.includes('/*')) {
-                json += line.toString()
-                    .replace("\r\n", "")
-                    .replace("\r", "")
-                    .replace("\n", "");
-            }
-        })
-        result = JSON.parse(json);
-        getXml(result, 'ScanToEmail', '_text').then((data) => {
-            // res.send(data);
-        })
-		fs.readFile(__dirname + '/../files/deactivate.json', 'utf8', function (err, data) {
-			res.send(json2xml(data));
-		});
+    // fs.readFile(__dirname + '/../files/scanToEmail.json', 'utf8', function (err, data) {
+    //     let json = '';
+    //     data.toString().split('\n').forEach((line) => {
+    //         if (!line.includes('/*')) {
+    //             json += line.toString()
+    //                 .replace("\r\n", "")
+    //                 .replace("\r", "")
+    //                 .replace("\n", "");
+    //         }
+    //     })
+    //     result = JSON.parse(json);
+    //     getXml(result, 'ScanToEmail', '_text').then((data) => {
+    //         // res.send(data);
+    //     })
+			fs.readFile(__dirname + '/../files/deactivate.json', 'utf8', function (err, data) {
+				res.send(json2xml(data));
+			});
     });
 };
 
