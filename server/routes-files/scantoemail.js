@@ -8,7 +8,7 @@ router.post('/add', ScanToEmail_Controller.create);
 
 // POST Route for to add new email[email address || ''] to file collection and having multi select option
 // in printer
-router.post('/add/:canMultiSelect', ScanToEmail_Controller.create);
+router.post('/createMulti/:canMultiSelect', ScanToEmail_Controller.createMulti);
 
 // GET Route for to get XML whether if there is email than ok button or else textarea with button
 router.get('/', ScanToEmail_Controller.getXml);

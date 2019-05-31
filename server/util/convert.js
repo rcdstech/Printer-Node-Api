@@ -79,7 +79,7 @@ const replaceValue = (object, keyToBeReplace, value, attr) => {
 const getMultiSelectItem = (data, index) => {
     return {
         "_attributes": {
-            "value": index,
+            "value": data,
             "selected": "false"
         },
         "Label": {
