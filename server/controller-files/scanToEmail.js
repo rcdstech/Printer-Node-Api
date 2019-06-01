@@ -21,12 +21,7 @@ exports.createMulti = function (req, res) {
 			if (req.params.canMultiSelect !== null || req.params.canMultiSelect !== undefined) {
 				fs.writeFile(__dirname + '/../files/multi-select.json', JSON.stringify(req.body), (err) => {
 					if (err) res.send(err);
-					fs.writeFile(__dirname + '/../files/canMultiSelect.json', JSON.stringify(
-						{canMultiSelect: req.params.canMultiSelect}
-					), (err) => {
-						if (err) res.send(err);
 						res.send({message: 'Added'})
-					});
 				});
 			}
 		});
@@ -94,17 +89,15 @@ exports.getXml = function (req, res) {
 					fs.readFile(__dirname + '/../json/multi-select.json', 'utf8', function (err, data) {
 						data = JSON.parse(data)
 						let items = [];
-						result['multi-select'].forEach((email, index) => {
-							items.push(getMultiSelectItem(email, index));
+						result['SelectionList']['Selection'].forEach((selection, index) => {
+							items.push(getMultiSelectItem(selection, index));
 						});
 						data = setActionsForMultiple(data, "./commandxml/sendToMultiMail", '');
-						fs.readFile(__dirname + '/../files/canMultiSelect.json', 'utf8', function (err, multiData) {
 							data['UiScreen']['IoScreen']['IoObject']['Selection']['_attributes']['multiple'] =
-								JSON.parse(multiData).canMultiSelect;
+                                result['SelectionList']['canMultiSelect'];
 							data['UiScreen']['IoScreen']['IoObject']['Selection']['Item'] = items;
 							console.log(data['UiScreen']['IoScreen']['IoObject']['Selection']['Item'])
 							res.send(json2xml(DisplayFormWithCDATA(json2xml(data))))
-						});
 					})
 				}
 			});
@@ -170,9 +163,8 @@ exports.sendToMultiMail = function (req, res) {
 		if(jsonXml) {
 			jsonXml =JSON.parse(jsonXml);
 			if(jsonXml['SerioEvent']['UserInput']['UserInputValues']['KeyValueData']['Value'] !== undefined) {
-			req.io.sockets.emit('getXml', {s:2, data:{"SelectionList": {
-				"canMultiSelect":"true",
-				"Selection": jsonXml['SerioEvent']['UserInput']['UserInputValues']['KeyValueData']['Value']['_text']
+			req.io.sockets.emit('getXml', {s:2, data:{"SelectionListRes": {
+				"SelectionChoice": jsonXml['SerioEvent']['UserInput']['UserInputValues']['KeyValueData']['Value']['_text']
 			}}});
 		} else {
 			let selectedItem = []
@@ -200,9 +192,8 @@ exports.sendToMultiMail = function (req, res) {
     //     getXml(result, 'ScanToEmail', '_text').then((data) => {
     //         // res.send(data);
     //     })
-			fs.readFile(__dirname + '/../files/deactivate.json', 'utf8', function (err, data) {
-				res.send(json2xml(data));
-			});
+    fs.readFile(__dirname + '/../files/deactivate.json', 'utf8', function (err, data) {
+        res.send(json2xml(data));
     });
 };
 
@@ -223,9 +214,9 @@ exports.submit = function (req, res) {
 		if(jsonXml) {
 			jsonXml =JSON.parse(jsonXml);
 			password = JSON.parse(password);
-			req.io.sockets.emit('getXml', {s:3, data:{"ScanToEmailRes": {
-			"Destination": password.password == jsonXml['SerioEvent']['UserInput']['UserInputValues']['KeyValueData']['Value']['_text'],
-			 "Status": "ACK"}
+			req.io.sockets.emit('getXml', {s:3, data:{"PasswordRequestRes": {
+			"UserResponse": password['PasswordRequest']['PasswordToCheck'] == jsonXml['SerioEvent']['UserInput']['UserInputValues']['KeyValueData']['Value']['_text']
+			}
 			}});
 		}	
 	}
