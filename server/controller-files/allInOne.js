@@ -1,11 +1,10 @@
 const {json2xml, DisplayFormWithCDATA, appendJson, getXml, getMultiSelectItem,
     setActionsForMultiple, xml2json} = require('../util/convert');
 const fs = require('fs');
-let jsonObject;
+let jsonObject = '';
 // Add new email[email address || ''] to monogo collection
 exports.create = function (req, res) {
 	jsonObject = req.body;
-	console.log(jsonObject)
   res.send({message: 'Added'})
 };
 
@@ -27,7 +26,7 @@ exports.createMessage = (req, res) => {
 };
 
 exports.close = (req, res) => {
-	jsonObject = req.body;
+	jsonObject = {close: true};
 	res.send({message: 'Added'})
 };
 
@@ -46,9 +45,12 @@ exports.getEmailXml = function (req, res) {
 			}});
 		}
 	}
-	// jsonObject = '';
-		// res.send(json2xml(jsonObject));
-		res.redirect('/file/commandxml');
+	fs.readFile(__dirname + '/../json/ScanToEmail.json', 'utf8', function (err, data) {
+		let json = appendJson(JSON.parse(data), 'Destination', [req.val || req.email || req.body.email ], '_text');
+	 jsonObject = '';
+	 res.send(json2xml(json));
+		//res.redirect('/file/commandxml');
+	});
 };
 
 
@@ -56,9 +58,9 @@ exports.getEmailXml = function (req, res) {
 exports.sendMail = function (req, res) {
 	req.io.sockets.emit('getXml', {s:1, data:req.xml});
 		getXml(jsonObject, 'ScanToEmail', '_text').then((data) => {
-			// res.send(data);
-			// jsonObject = '';
-			res.redirect('/file/commandxml');
+			jsonObject = '';
+			res.send(data);
+			// res.redirect('/file/commandxml');
 		})
 };
 
@@ -85,7 +87,7 @@ exports.sendToMultiMail = function (req, res) {
 			}
 		}
 	}
-	// jsonObject = '';
+	 jsonObject = '';
 		res.redirect('/file/commandxml');
 };
 
@@ -100,17 +102,20 @@ exports.submit = function (req, res) {
 					"UserResponse": jsonObject['PasswordRequest']['PasswordToCheck'] == jsonXml['SerioEvent']['UserInput']['UserInputValues']['KeyValueData']['Value']['_text']
 				}
 				}});
+	 jsonObject = jsonObject['PasswordRequest']['PasswordToCheck'] == jsonXml['SerioEvent']['UserInput']['UserInputValues']['KeyValueData']['Value']['_text']
+	 ? '' : jsonObject;
 			}
 		}
-	// jsonObject = '';
 			res.redirect('/file/commandxml');
 };
 
 exports.getXml = function (req, res) {
-	if(jsonObject !== '') {
+	console.log(jsonObject)
+
+	if(jsonObject !== '' ) {
 		const jsonType = Object.keys(jsonObject)[0];
 		if(jsonType === 'ScanToEmail') {
-			if (jsonType['ScanToEmail']['Destination'] === "") {
+			if (jsonObject['ScanToEmail']['Destination'] === "") {
 				fs.readFile(__dirname + '/../json/textarea-button.json', 'utf8', function (err, data) {
 					data = JSON.parse(data)
 					data['UiScreen']['IoScreen']['IoObject']['TextArea']['Mask'] = 'false';
@@ -118,11 +123,11 @@ exports.getXml = function (req, res) {
 					data['UiScreen']['Operations']['Op']['_attributes']['action'] = "/file/commandxml/email";
 					res.send(json2xml(DisplayFormWithCDATA(json2xml(data))))
 				})
-			} else if (typeof jsonType['ScanToEmail']['Destination'] === "object") {
+			} else if (typeof jsonObject['ScanToEmail']['Destination'] === "object") {
 				fs.readFile(__dirname + '/../json/multi-select.json', 'utf8', function (err, data) {
 					data = JSON.parse(data)
 					let items = [];
-					jsonType['ScanToEmail']['Destination'].forEach((email, index) => {
+					jsonObject['ScanToEmail']['Destination'].forEach((email, index) => {
 						items.push(getMultiSelectItem(email, index));
 					});
 					data = setActionsForMultiple(data, "/file/commandxml/sendToMultiMail", '');
@@ -144,12 +149,12 @@ exports.getXml = function (req, res) {
 			fs.readFile(__dirname + '/../json/multi-select.json', 'utf8', function (err, data) {
 				data = JSON.parse(data)
 				let items = [];
-				jsonType['SelectionList']['Selection'].forEach((selection, index) => {
+				jsonObject['SelectionList']['Selection'].forEach((selection, index) => {
 					items.push(getMultiSelectItem(selection, index));
 				});
 				data = setActionsForMultiple(data, "/file/commandxml/sendToMultiMail", '');
 				data['UiScreen']['IoScreen']['IoObject']['Selection']['_attributes']['multiple'] =
-					jsonType['SelectionList']['canMultiSelect'];
+				jsonObject['SelectionList']['canMultiSelect'];
 				data['UiScreen']['IoScreen']['IoObject']['Selection']['Item'] = items;
 				res.send(json2xml(DisplayFormWithCDATA(json2xml(data))))
 			});
@@ -167,8 +172,9 @@ exports.getXml = function (req, res) {
 		else if(jsonType === 'message') {
 			fs.readFile(__dirname + '/../json/button.json', 'utf8', function (err, data) {
 				data = JSON.parse(data)
-				data['UiScreen']['Operations']['Op'][0]['_attributes']['action'] = "/file/commandxml/email";
-				data['UiScreen']['IoScreen']['IoObject']['Message']['_text'] = jsonType['message'];
+				data['UiScreen']['Operations']['Op'][0]['_attributes']['action'] = "/file/commandxml";
+				data['UiScreen']['IoScreen']['IoObject']['Message']['_text'] = jsonObject['message'];
+				jsonObject = '';
 				res.send(json2xml(DisplayFormWithCDATA(json2xml(data))))
 			});
 			}
@@ -177,5 +183,13 @@ exports.getXml = function (req, res) {
 					res.send(json2xml(data));
 			});
 		}
+	} else {
+		res.send('<?xml version="1.0" encoding="utf-8"?>' +
+		'<SerioCommands version="1.0">' +
+		 '<DeactivateLock>' +
+		'<JobFinAckUrl>http://192.168.0.60:8101/file/commandxml</JobFinAckUrl>' +
+		'</DeactivateLock>' +
+	 '</SerioCommands>');
+	 //res.redirect('/file/commandxml');
 	}
 };

@@ -8,7 +8,7 @@
           {
             "_attributes": {
               "type": "Submit",
-              "action": "./commandxml/sendToMail"
+              "action": "/file/commandxml/sendToMail"
             },
             "Label": {
               "_attributes": {
