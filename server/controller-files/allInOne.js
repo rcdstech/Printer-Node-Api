@@ -48,7 +48,7 @@ exports.getEmailXml = function (req, res) {
 	}
 	// jsonObject = '';
 		// res.send(json2xml(jsonObject));
-		res.redirect('/file/var/commandxml');
+		res.redirect('/file/commandxml');
 };
 
 
@@ -58,7 +58,7 @@ exports.sendMail = function (req, res) {
 		getXml(jsonObject, 'ScanToEmail', '_text').then((data) => {
 			// res.send(data);
 			// jsonObject = '';
-			res.redirect('/file/var/commandxml');
+			res.redirect('/file/commandxml');
 		})
 };
 
@@ -86,7 +86,7 @@ exports.sendToMultiMail = function (req, res) {
 		}
 	}
 	// jsonObject = '';
-		res.redirect('/file/var/commandxml');
+		res.redirect('/file/commandxml');
 };
 
 // get XML after submit password
@@ -103,7 +103,7 @@ exports.submit = function (req, res) {
 			}
 		}
 	// jsonObject = '';
-			res.redirect('/file/var/commandxml');
+			res.redirect('/file/commandxml');
 };
 
 exports.getXml = function (req, res) {
@@ -115,7 +115,7 @@ exports.getXml = function (req, res) {
 					data = JSON.parse(data)
 					data['UiScreen']['IoScreen']['IoObject']['TextArea']['Mask'] = 'false';
 					data['UiScreen']['IoScreen']['IoObject']['TextArea']['Title'] = 'Enter Email Address';
-					data['UiScreen']['Operations']['Op']['_attributes']['action'] = "/file/var/commandxml/email";
+					data['UiScreen']['Operations']['Op']['_attributes']['action'] = "/file/commandxml/email";
 					res.send(json2xml(DisplayFormWithCDATA(json2xml(data))))
 				})
 			} else if (typeof jsonType['ScanToEmail']['Destination'] === "object") {
@@ -125,7 +125,7 @@ exports.getXml = function (req, res) {
 					jsonType['ScanToEmail']['Destination'].forEach((email, index) => {
 						items.push(getMultiSelectItem(email, index));
 					});
-					data = setActionsForMultiple(data, "/file/var/commandxml/sendToMultiMail", '');
+					data = setActionsForMultiple(data, "/file/commandxml/sendToMultiMail", '');
 					fs.readFile(__dirname + '/../files/canMultiSelect.json', 'utf8', function (err, multiData) {
 						data['UiScreen']['IoScreen']['IoObject']['Selection']['_attributes']['multiple'] =
 							JSON.parse(multiData).canMultiSelect;
@@ -147,7 +147,7 @@ exports.getXml = function (req, res) {
 				jsonType['SelectionList']['Selection'].forEach((selection, index) => {
 					items.push(getMultiSelectItem(selection, index));
 				});
-				data = setActionsForMultiple(data, "/file/var/commandxml/sendToMultiMail", '');
+				data = setActionsForMultiple(data, "/file/commandxml/sendToMultiMail", '');
 				data['UiScreen']['IoScreen']['IoObject']['Selection']['_attributes']['multiple'] =
 					jsonType['SelectionList']['canMultiSelect'];
 				data['UiScreen']['IoScreen']['IoObject']['Selection']['Item'] = items;
@@ -160,14 +160,14 @@ exports.getXml = function (req, res) {
 				data['UiScreen']['IoScreen']['IoObject']['TextArea']['Mask'] = 'true';
 				data['UiScreen']['IoScreen']['IoObject']['TextArea']['Title'] = 'Enter Password';
 				data['UiScreen']['Title'] = 'send Password';
-				data['UiScreen']['Operations']['Op']['_attributes']['action'] = "/file/var/commandxml/submit";
+				data['UiScreen']['Operations']['Op']['_attributes']['action'] = "/file/commandxml/submit";
 				res.send(json2xml(DisplayFormWithCDATA(json2xml(data))))
 			});
 		}
 		else if(jsonType === 'message') {
 			fs.readFile(__dirname + '/../json/button.json', 'utf8', function (err, data) {
 				data = JSON.parse(data)
-				data['UiScreen']['Operations']['Op'][0]['_attributes']['action'] = "/file/var/commandxml/email";
+				data['UiScreen']['Operations']['Op'][0]['_attributes']['action'] = "/file/commandxml/email";
 				data['UiScreen']['IoScreen']['IoObject']['Message']['_text'] = jsonType['message'];
 				res.send(json2xml(DisplayFormWithCDATA(json2xml(data))))
 			});
