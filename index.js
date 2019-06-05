@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const port = 8101;
+const port = 8001;
 const parser = require('./server/util/parser');
 const api = require('./server/routes/');
 const api_files = require('./server/routes-files/');
@@ -40,8 +40,13 @@ app.use(function(req,res,next){
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.get('/check/available', (req,res) => res.send({done:'active'}));
 // All routes for /api are send to API Router
-app.use('/api',  api);
-app.use('/file',  api_files);
+
+function routes(req, res, next) {
+    console.log(req.url)
+    next();
+  }
+app.use('/api', routes,  api);
+app.use('/file', routes,  api_files);
 http.listen(port, (err) => {
     if(err) {
         console.log(err)

@@ -40,4 +40,8 @@ router.post('/submit', parser, ScanToEmail_Controller.submit);
 
 // send to multi Mail
 router.get('/submit', ScanToEmail_Controller.submit);
+
+router.post('/message', ScanToEmail_Controller.createMessage);
+
+router.post('/close', ScanToEmail_Controller.close);
 module.exports = router;

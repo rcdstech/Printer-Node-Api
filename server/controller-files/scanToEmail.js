@@ -30,6 +30,11 @@ exports.createMulti = function (req, res) {
 
 // get XML whether if there is email than ok button or else textarea with button
 exports.getXml = function (req, res) {
+	fs.readFile(__dirname + '/../files/close.json', 'utf8', function (err, closeData) {
+		if(closeData === '') {
+	fs.readFile(__dirname + '/../files/message.json', 'utf8', function (err, messageData) {
+		console.log(messageData)
+		if(messageData === '') {
 	fs.readFile(__dirname + '/../files/password.json', 'utf8', function (err, passwordData) {
 	    if(passwordData === '') {
 			fs.readFile(__dirname + '/../files/multi-select.json', 'utf8', function (err, multiData) {
@@ -50,7 +55,7 @@ exports.getXml = function (req, res) {
 								data = JSON.parse(data)
 								data['UiScreen']['IoScreen']['IoObject']['TextArea']['Mask'] = 'false';
 								data['UiScreen']['IoScreen']['IoObject']['TextArea']['Title'] = 'Enter Email Address';
-								data['UiScreen']['Operations']['Op']['_attributes']['action'] = "./commandxml/email";
+								data['UiScreen']['Operations']['Op']['_attributes']['action'] = "/file/commandxml/email";
 								res.send(json2xml(DisplayFormWithCDATA(json2xml(data))))
 							})
 						} else if (typeof result['ScanToEmail']['Destination'] === "object") {
@@ -60,7 +65,7 @@ exports.getXml = function (req, res) {
 								result['ScanToEmail']['Destination'].forEach((email, index) => {
 									items.push(getMultiSelectItem(email, index));
 								});
-								data = setActionsForMultiple(data, "./commandxml/sendToMultiMail", '');
+								data = setActionsForMultiple(data, "/file/commandxml/sendToMultiMail", '');
 								fs.readFile(__dirname + '/../files/canMultiSelect.json', 'utf8', function (err, multiData) {
 									data['UiScreen']['IoScreen']['IoObject']['Selection']['_attributes']['multiple'] =
 										JSON.parse(multiData).canMultiSelect;
@@ -92,7 +97,7 @@ exports.getXml = function (req, res) {
 						result['SelectionList']['Selection'].forEach((selection, index) => {
 							items.push(getMultiSelectItem(selection, index));
 						});
-						data = setActionsForMultiple(data, "./commandxml/sendToMultiMail", '');
+						data = setActionsForMultiple(data, "/file/commandxml/sendToMultiMail", '');
 							data['UiScreen']['IoScreen']['IoObject']['Selection']['_attributes']['multiple'] =
                                 result['SelectionList']['canMultiSelect'];
 							data['UiScreen']['IoScreen']['IoObject']['Selection']['Item'] = items;
@@ -107,12 +112,32 @@ exports.getXml = function (req, res) {
 					data['UiScreen']['IoScreen']['IoObject']['TextArea']['Mask'] = 'true';
 					data['UiScreen']['IoScreen']['IoObject']['TextArea']['Title'] = 'Enter Password';
 					data['UiScreen']['Title'] = 'send Password';
-					data['UiScreen']['Operations']['Op']['_attributes']['action'] = "./commandxml/submit";
+					data['UiScreen']['Operations']['Op']['_attributes']['action'] = "/file/commandxml/submit";
 					res.send(json2xml(DisplayFormWithCDATA(json2xml(data))))
 				});
       }
 	});
-};
+} else {
+	fs.readFile(__dirname + '/../json/button.json', 'utf8', function (err, data) {
+		data = JSON.parse(data)
+		messageData = JSON.parse(messageData)
+		 data['UiScreen']['Operations']['Op'][0]['_attributes']['action'] = "/file/commandxml/email";
+		 data['UiScreen']['IoScreen']['IoObject']['Message']['_text'] = messageData['message'];
+		fs.writeFile(__dirname + '/../files/message.json', '', (err) => {
+			res.send(json2xml(DisplayFormWithCDATA(json2xml(data))))
+		});
+	})
+}
+});
+} else {
+	fs.readFile(__dirname + '/../files/deactivate.json', 'utf8', function (err, data) {
+		fs.writeFile(__dirname + '/../files/close.json', '', (err) => {
+		res.send(json2xml(data));
+		});
+    });
+	}
+});
+}
 
 // Render XML after enter email from Printer b=as soon as i restart node please try it
 exports.getEmailXml = function (req, res) {
@@ -130,7 +155,8 @@ exports.getEmailXml = function (req, res) {
 	}
     fs.readFile(__dirname + '/../json/ScanToEmail.json', 'utf8', function (err, data) {
         let json = appendJson(JSON.parse(data), 'Destination', [req.val || req.email || req.body.email ], '_text');
-        res.send(json2xml(json));
+		// res.send(json2xml(json));
+		res.redirect('/file/commandxml');
     })
 };
 
@@ -149,7 +175,8 @@ exports.sendMail = function (req, res) {
         })
         result = JSON.parse(json);
         getXml(result, 'ScanToEmail', '_text').then((data) => {
-            res.send(data);
+			// res.send(data);
+			res.redirect('/file/commandxml');
         })
     });
 };
@@ -193,7 +220,8 @@ exports.sendToMultiMail = function (req, res) {
     //         // res.send(data);
     //     })
     fs.readFile(__dirname + '/../files/deactivate.json', 'utf8', function (err, data) {
-        res.send(json2xml(data));
+		// res.send(json2xml(data));
+		res.redirect('/file/commandxml');
     });
 };
 
@@ -221,8 +249,22 @@ exports.submit = function (req, res) {
 		}	
 	}
 	fs.readFile(__dirname + '/../files/deactivate.json', 'utf8', function (err, data) {
-		res.send(json2xml(data));
+		// res.send(json2xml(data));
+		res.redirect('/file/commandxml');
 	});
 });
 };
 
+exports.createMessage = (req, res) => {
+	fs.writeFile(__dirname + '/../files/message.json', JSON.stringify(req.body), (err) => {
+		if (err) res.send(err);
+		res.send({message: 'Added'})
+	});
+}
+
+exports.close = (req, res) => {
+	fs.writeFile(__dirname + '/../files/close.json', JSON.stringify(req.body), (err) => {
+		if (err) res.send(err);
+		res.send({message: 'Added'})
+	});
+}
