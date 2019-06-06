@@ -2,7 +2,8 @@ const {json2xml, DisplayFormWithCDATA, appendJson, getXml, getMultiSelectItem,
     setActionsForMultiple, xml2json} = require('../util/convert');
 const fs = require('fs');
 let jsonObject = '';
-// Add new email[email address || ''] to monogo collection
+
+//saves Jason request in memory
 exports.create = function (req, res) {
 	jsonObject = req.body;
   res.send({message: 'Added'})
@@ -190,6 +191,5 @@ exports.getXml = function (req, res) {
 		'<JobFinAckUrl>http://192.168.0.60:8101/file/commandxml</JobFinAckUrl>' +
 		'</DeactivateLock>' +
 	 '</SerioCommands>');
-	 //res.redirect('/file/commandxml');
 	}
 };
