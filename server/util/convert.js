@@ -1,6 +1,7 @@
 const convert = require('xml-js');
-const { xml2jsonConfig } = require('../config');
+const xml2jsonConfig = {compact: true, spaces: 4, cdataKey: '_cdata'};
 const fs = require('fs');
+
 const xml2json = (data) => {
     return convert.xml2json(data, xml2jsonConfig);
 }
