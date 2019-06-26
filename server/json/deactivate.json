@@ -10,7 +10,7 @@
       "version": "100"
     },
       "JobFinAckUrl": {
-        "_text": "./testlogout2.xml"
+        "_text": "./commandxml"
       }
     
   }

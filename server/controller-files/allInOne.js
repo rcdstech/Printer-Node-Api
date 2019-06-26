@@ -40,7 +40,7 @@ exports.getEmailXml = function (req, res) {
 		if(jsonXml) {
 			jsonXml =JSON.parse(jsonXml);
 			console.log()
-			req.io.sockets.emit('getXml', {s:1, data:{"ScanToEmailRes": {
+			req.io.sockets.emit('getJson', {s: 'ScanToEmail', data:{"ScanToEmailRes": {
 				"Destination": jsonXml['SerioEvent']['UserInput']['UserInputValues']['KeyValueData']['Value']['_text'],
 				"Status": "ACK"}
 			}});
@@ -57,7 +57,7 @@ exports.getEmailXml = function (req, res) {
 
 // Render xml from last given email
 exports.sendMail = function (req, res) {
-	req.io.sockets.emit('getXml', {s:1, data:req.xml});
+	req.io.sockets.emit('getJson', {s: 'ScanToEmail', data:req.xml});
 		getXml(jsonObject, 'ScanToEmail', '_text').then((data) => {
 			jsonObject = '';
 			res.send(data);
@@ -68,12 +68,12 @@ exports.sendMail = function (req, res) {
 // Render xml from last given Multi email
 exports.sendToMultiMail = function (req, res) {
 	let xml = req.xml;
-	if(xml) {
+	if(xml) {02
 		let jsonXml = xml2json(xml);
 		if(jsonXml) {
 			jsonXml =JSON.parse(jsonXml);
 			if(jsonXml['SerioEvent']['UserInput']['UserInputValues']['KeyValueData']['Value'] !== undefined) {
-				req.io.sockets.emit('getXml', {s:2, data:{"SelectionListRes": {
+				req.io.sockets.emit('getJson', {s: 'MultiSelection', data:{"SelectionListRes": {
 					"SelectionChoice": jsonXml['SerioEvent']['UserInput']['UserInputValues']['KeyValueData']['Value']['_text']
 				}}});
 			} else {
@@ -81,8 +81,8 @@ exports.sendToMultiMail = function (req, res) {
 				jsonXml['SerioEvent']['UserInput']['UserInputValues']['KeyValueData'].forEach(i => {
 					selectedItem.push(i['Value']['_text']);
 				})
-				req.io.sockets.emit('getXml', {s:2, data:{"SelectionList": {
-					"canMultiSelect":"true",
+				req.io.sockets.emit('getJson', {s: 'MultiSelection', data:{"SelectionList": {
+					"canMultiSelect": jsonObject['SelectionList']['canMultiSelect'],
 					"Selection": selectedItem
 				}}});
 			}
@@ -99,7 +99,7 @@ exports.submit = function (req, res) {
 			let jsonXml = xml2json(xml);
 			if(jsonXml) {
 				jsonXml =JSON.parse(jsonXml);
-				req.io.sockets.emit('getXml', {s:3, data:{"PasswordRequestRes": {
+				req.io.sockets.emit('getJson', {s: 'Password', data:{"PasswordRequestRes": {
 					"UserResponse": jsonObject['PasswordRequest']['PasswordToCheck'] == jsonXml['SerioEvent']['UserInput']['UserInputValues']['KeyValueData']['Value']['_text']
 				}
 				}});
