@@ -111,8 +111,6 @@ exports.submit = function (req, res) {
 };
 
 exports.getXml = function (req, res) {
-	console.log(jsonObject)
-
 	if(jsonObject !== '' ) {
 		const jsonType = Object.keys(jsonObject)[0];
 		if(jsonType === 'ScanToEmail') {
@@ -136,7 +134,6 @@ exports.getXml = function (req, res) {
 						data['UiScreen']['IoScreen']['IoObject']['Selection']['_attributes']['multiple'] =
 							JSON.parse(multiData).canMultiSelect;
 						data['UiScreen']['IoScreen']['IoObject']['Selection']['Item'] = items;
-						console.log(data['UiScreen']['IoScreen']['IoObject']['Selection']['Item'])
 						res.send(json2xml(DisplayFormWithCDATA(json2xml(data))))
 					});
 				})
@@ -183,6 +180,27 @@ exports.getXml = function (req, res) {
 			fs.readFile(__dirname + '/../json/deactivate.json', 'utf8', function (err, data) {
 					res.send(json2xml(data));
 			});
+		}
+		else if(jsonType === 'Print') {
+			fs.readFile(__dirname + '/../json/print.json', 'utf8', function (err, data) {
+				let fileJson = JSON.parse(data);
+				let authentication = {
+					"AuthenticationProfiles": {
+						"HttpAuth": {
+							"HttpAuthParams": jsonObject['Authentication']
+						}
+					}
+				} ;
+				let requestJson;
+				if(jsonObject['Authentication']['User'] && jsonObject['Authentication']['Password']) {
+					requestJson = {...authentication, ...jsonObject['Print']}
+				} else {
+					requestJson = {...jsonObject['Print']}
+				}
+				fileJson['SerioCommands']['IoDirectPrint'] = requestJson;
+				jsonObject = '';
+			res.send(json2xml(fileJson));
+		});
 		}
 	} else {
 		res.send('<?xml version="1.0" encoding="utf-8"?>' +

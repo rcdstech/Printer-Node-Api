@@ -1,0 +1,50 @@
+{
+  "_declaration": {
+    "_attributes": {
+      "version": "1.0",
+      "encoding": "UTF-8"
+    }
+  },
+  "SerioCommands": {
+    "_attributes": {
+      "version": "1.0"
+    },
+    "IoDirectPrint": {
+      "AuthenticationProfiles": {
+        "HttpAuth": {
+          "HttpAuthParams": {
+            "User": {
+              "_text": ""
+            },
+            "Password": {
+              "_text": ""
+            }
+          }
+        }
+      },
+      "FilePath": {
+        "_text": ""
+      },
+      "ColorMode": {
+        "_text": "Mono"
+      },
+      "PaperSize": {
+        "_text": "Letter"
+      },
+      "NumCopies": {
+        "_text": "3"
+      },
+      "FeedTray": {
+        "_text": "Auto"
+      },
+      "JobFinAckUrl": {
+        "_text": "http://192.168.0.60:8101/file/commandxml"
+      }
+    },
+    "DisplayInfo": {
+      "Script": {
+        "_cdata": "\n\t\t<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\t\t<UiScreen>\n\t\t\t<NullScreen></NullScreen>\n\t\t</UiScreen>\n\t"
+      }
+    }
+  }
+}
