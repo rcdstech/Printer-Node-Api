@@ -25,6 +25,12 @@
         "_text":"Normal"},
       "FileType": {
         "_text":"PDF"},
+      "DocSize": {
+        "_text":"Auto"},
+      "DuplexScanEnable": {
+        "_text":"false"},
+      "NumSendPage": {
+        "_text":1},
       "FileNameFixed": "true",
       "JobFinAckUrl": "http://192.168.0.60:8101/file/commandxml"
     },
