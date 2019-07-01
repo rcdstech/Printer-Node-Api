@@ -1,6 +1,7 @@
 const convert = require('xml-js');
 const xml2jsonConfig = {compact: true, spaces: 4, cdataKey: '_cdata'};
 const fs = require('fs');
+const objectPath = require('object-path')
 
 const xml2json = (data) => {
     return convert.xml2json(data, xml2jsonConfig);
@@ -23,6 +24,19 @@ const getXml =(json, xml, attr) => {
                 });
             }
             resolve(json2xml(serverJSON));
+        });
+    });
+}
+const getXmlWithJSON =(json, xml, replaceObject) => {
+    return new Promise((resolve) => {
+        fs.readFile(__dirname + '/../json/' + xml + '.json', 'utf8', function (err, data) {
+            if (err) throw err;
+            let serverJSON = JSON.parse(data);
+            let setValue = (propertyPath, value, obj) => objectPath.set(obj, propertyPath, value)
+					  let getValue = (propertyPath, obj) => objectPath.get(obj, propertyPath, null) // null is a default value, returns undefined if nothing set
+
+					setValue(replaceObject, json, serverJSON)
+					resolve(json2xml(serverJSON));
         });
     });
 }
@@ -95,6 +109,19 @@ const setActionsForMultiple = (multipleData, okAction, backAction) => {
     multipleData['UiScreen']['Operations']['Op'][1]['_attributes']['action'] = backAction;
     return multipleData;
 }
+const removeEmpty = (obj) => {
+	let replaceUndefinedOrNull = (key, value) => {
+		if (value === null || value === undefined || value === '') {
+			return undefined;
+		}
+
+		return value;
+	}
+	obj = JSON.stringify(obj, replaceUndefinedOrNull);
+	obj = JSON.parse(obj);
+	return obj;
+}
+
 module.exports = {
     xml2json,
     json2xml,
@@ -103,5 +130,7 @@ module.exports = {
     appendJson,
     replaceValue,
     getMultiSelectItem,
-    setActionsForMultiple
+    setActionsForMultiple,
+	getXmlWithJSON,
+	removeEmpty
 }

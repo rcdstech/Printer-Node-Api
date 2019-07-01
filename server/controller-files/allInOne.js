@@ -1,5 +1,5 @@
 const {json2xml, DisplayFormWithCDATA, appendJson, getXml, getMultiSelectItem,
-    setActionsForMultiple, xml2json} = require('../util/convert');
+    setActionsForMultiple, xml2json, getXmlWithJSON, removeEmpty} = require('../util/convert');
 const fs = require('fs');
 let jsonObject = '';
 
@@ -58,7 +58,7 @@ exports.getEmailXml = function (req, res) {
 // Render xml from last given email
 exports.sendMail = function (req, res) {
 	req.io.sockets.emit('getJson', {s: 'ScanToEmail', data:req.xml});
-		getXml(jsonObject, 'ScanToEmail', '_text').then((data) => {
+	getXmlWithJSON(removeEmpty(jsonObject)['scanToEmail'], 'ScanToEmail', 'SerioCommands.IoScanAndSend').then((data) => {
 			jsonObject = '';
 			res.send(data);
 			// res.redirect('/file/commandxml');
@@ -68,7 +68,7 @@ exports.sendMail = function (req, res) {
 // Render xml from last given Multi email
 exports.sendToMultiMail = function (req, res) {
 	let xml = req.xml;
-	if(xml) {02
+	if(xml) {
 		let jsonXml = xml2json(xml);
 		if(jsonXml) {
 			jsonXml =JSON.parse(jsonXml);
