@@ -58,8 +58,8 @@ exports.getEmailXml = function (req, res) {
 // Render xml from last given email
 exports.sendMail = function (req, res) {
 	req.io.sockets.emit('getJson', {s: 'ScanToEmail', data:req.xml});
-	getXmlWithJSON(removeEmpty(jsonObject)['scanToEmail'], 'ScanToEmail', 'SerioCommands.IoScanAndSend').then((data) => {
-			jsonObject = '';
+	getXmlWithJSON(removeEmpty(jsonObject)['ScanToEmail'], 'ScanToEmail', 'SerioCommands.IoScanAndSend').then((data) => {
+			// jsonObject = '';
 			res.send(data);
 			// res.redirect('/file/commandxml');
 		})
