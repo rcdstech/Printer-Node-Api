@@ -68,7 +68,7 @@ exports.sendMail = function (req, res) {
 // Render xml from last given Multi email
 exports.sendToMultiMail = function (req, res) {
 	let xml = req.xml;
-	if(xml) {02
+	if(xml) {
 		let jsonXml = xml2json(xml);
 		if(jsonXml) {
 			jsonXml =JSON.parse(jsonXml);
@@ -190,17 +190,21 @@ exports.getXml = function (req, res) {
 							"HttpAuthParams": jsonObject['Authentication']
 						}
 					}
-				} ;
+				};
 				let requestJson;
-				if(jsonObject['Authentication']['User'] && jsonObject['Authentication']['Password']) {
+				if (jsonObject['Authentication']['User'] && jsonObject['Authentication']['Password']) {
 					requestJson = {...authentication, ...jsonObject['Print']}
 				} else {
 					requestJson = {...jsonObject['Print']}
 				}
 				fileJson['SerioCommands']['IoDirectPrint'] = requestJson;
 				jsonObject = '';
-			res.send(json2xml(fileJson));
-		});
+				res.send(json2xml(fileJson));
+			});
+		} else if(jsonType === 'xml') {
+			var xml = jsonObject.xml;
+			jsonObject = '';
+			res.send(xml);
 		}
 	} else {
 		res.send('<?xml version="1.0" encoding="utf-8"?>' +

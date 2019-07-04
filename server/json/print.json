@@ -43,7 +43,7 @@
     },
     "DisplayInfo": {
       "Script": {
-        "_cdata": "\n\t\t<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\t\t<UiScreen>\n\t\t\t<NullScreen></NullScreen>\n\t\t</UiScreen>\n\t"
+        "_cdata": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n         <UiScreen>\n                    <NullScreen></NullScreen>\n         </UiScreen>\n         "
       }
     }
   }
