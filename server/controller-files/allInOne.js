@@ -65,6 +65,17 @@ exports.sendMail = function (req, res) {
 		})
 };
 
+
+// Render xml from last given FTP
+exports.ScanToFTP = function (req, res) {
+	req.io.sockets.emit('getJson', {s: 'ScanToFTP', data:req.xml});
+	getXmlWithJSON(removeEmpty(jsonObject)['ScanToFTP'], 'ScanToFTP', 'SerioCommands.IoScanAndSend').then((data) => {
+			// jsonObject = '';
+			res.send(data);
+			// res.redirect('/file/commandxml');
+		})
+};
+
 // Render xml from last given Multi email
 exports.sendToMultiMail = function (req, res) {
 	let xml = req.xml;
@@ -205,6 +216,13 @@ exports.getXml = function (req, res) {
 			var xml = jsonObject.xml;
 			jsonObject = '';
 			res.send(xml);
+		} else if(jsonType === 'ScanToFTP') {
+			fs.readFile(__dirname + '/../json/button.json', 'utf8', function (err, data) {
+				data = JSON.parse(data)
+				data['UiScreen']['Operations']['Op'][0]['_attributes']['action'] = "/file/commandxml/ScanToFTP";
+				data['UiScreen']['IoScreen']['IoObject']['Message']['_text'] = 'Press OK or START to Scan and send FTP.';
+				res.send(json2xml(DisplayFormWithCDATA(json2xml(data))))
+			})
 		}
 	} else {
 		res.send('<?xml version="1.0" encoding="utf-8"?>' +

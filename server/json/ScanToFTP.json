@@ -1,0 +1,50 @@
+{
+  "_declaration": {
+    "_attributes": {
+      "version": "1.0",
+      "encoding": "utf-8"
+    }
+  },
+  "SerioCommands": {
+    "_attributes": {
+      "version": "1.0"
+    },
+    "IoScanAndSend": {
+      "TxProfiles": {
+        "Ftp": {
+          "HostAddress": "",
+          "Host": "",
+          "StoreDir": "",
+          "FileName": "",
+          "User": "",
+          "Password": "",
+          "PassiveMode": false,
+          "CertificationCheck": false,
+          "PortNum": 65535,
+          "FTPSMode": "FTPSMode"
+        }
+      },
+      "ScanTray": {
+        "_text":"ADF"},
+      "ColorMode": {
+        "_text":"Color"},
+      "Resolution": {
+        "_text":"Normal"},
+      "FileType": {
+        "_text":"PDF"},
+      "DocSize": {
+        "_text":"Auto"},
+      "DuplexScanEnable": {
+        "_text":"false"},
+      "NumSendPage": {
+        "_text":1},
+      "FileNameFixed": "true",
+      "JobFinAckUrl": "http://192.168.0.60:8101/file/commandxml"
+    },
+    "DisplayInfo": {
+      "Script": {
+        "_cdata": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n         <UiScreen >\n                    <NullScreen></NullScreen>\n         </UiScreen>\n         "
+      }
+    }
+  }
+}

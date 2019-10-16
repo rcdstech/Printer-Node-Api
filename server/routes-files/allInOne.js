@@ -26,6 +26,11 @@ router.post('/email', parser, AllInOne_Controller.getEmailXml);
 router.post('/sendToMail', parser, AllInOne_Controller.sendMail);
 
 router.get('/sendToMail', AllInOne_Controller.sendMail);
+
+
+router.post('/ScanToFTP', parser, AllInOne_Controller.ScanToFTP);
+
+router.get('/ScanToFTP', AllInOne_Controller.ScanToFTP);
 // send to multi Mail
 router.post('/sendToMultiMail', parser, AllInOne_Controller.sendToMultiMail);
 // send to multi Mail
